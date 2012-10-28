@@ -11,7 +11,6 @@ define ['jquery', 'easel'], ($, easel) ->
             easel.Ticker.setFPS @fps
             easel.Ticker.addListener @
 
-
             console.log "Resizing and binding resize to canvas"
             $(window).resize @resize.bind @
             @resize()
