@@ -7,6 +7,5 @@
     }
   },
 
-  "location": { "x": 0, "y": 0 },
-  "size": { "width": 16, "height": 16 }
+  "location": { "x": 0, "y": 0 }
 }

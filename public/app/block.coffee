@@ -1,5 +1,9 @@
 define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
     class Block extends EventEmitter
+        size:
+            width: 16
+            height: 16
+
         container: null
         blocks: {}
 
@@ -33,6 +37,6 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
                 @blocks[x][y] = bmp
                 @container.addChild bmp
 
-            for y in [0..@data.size.height]
-                for x in [0..@data.size.width]
+            for y in [0..@size.height]
+                for x in [0..@size.width]
                     add_block(x, y)

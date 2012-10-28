@@ -22,4 +22,4 @@ define ['jquery', 'easel', 'EventEmitter', 'block'], ($, $e, EventEmitter, Block
                     @blocks[block.x][block.y] = b
                     @screen.stage.addChild b.container
             .error =>
-                console.log "Failed to load block."
+                console.log "Failed to fetch block."
