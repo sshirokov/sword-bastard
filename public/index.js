@@ -8,6 +8,7 @@ require({
     'jquery': '/js/jquery.min',
     'bootstrap': '/js/bootstrap.min',
     'coffee-script': '/js/coffee-script',
+    'easel': '/js/easeljs-0.5.0.min',
 
     // RequireJS plugins
     'cs': "/js/cs",
@@ -15,6 +16,10 @@ require({
   },
 
   shim: {
-    'bootstrap': ['jquery']
+    'bootstrap': ['jquery'],
+
+    'easel': {
+      exports: 'createjs'
+    }
   }
 }, ['domReady!', 'cs!index']);
