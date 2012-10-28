@@ -31,11 +31,19 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
                 frame = @tileset.getFrame 0
                 bmp = new $e.Bitmap frame.image
                 bmp.sourceRect = frame.rect
-                bmp.x = (x * @data.tileset.frames.width)
-                bmp.y = (y * @data.tileset.frames.width)
+
+                label = new $e.Text("[#{@data.location.x},#{@data.location.y}](#{x},#{y})")
+
+                block = new $e.Container()
+                block.addChild bmp
+                block.addChild label
+                block.x = (x * @data.tileset.frames.width)
+                block.y = (y * @data.tileset.frames.width)
+
                 @blocks[x] ?= {}
-                @blocks[x][y] = bmp
-                @container.addChild bmp
+                @blocks[x][y] = block
+
+                @container.addChild block
 
             for y in [0..@size.height]
                 for x in [0..@size.width]
