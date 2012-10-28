@@ -9,4 +9,5 @@ define ['jquery', 'cs!screen', 'easel'], ($, Screen, easel) ->
 
     screen.stage.addChild text
 
-    console.log "Stage: #{stage}"
+
+    console.log "Stage: #{screen.stage}"

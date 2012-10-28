@@ -1,8 +1,9 @@
 define ['jquery', 'easel'], ($, easel) ->
     class Screen
-        BASE_RES: [1024, 576]
+        size: {width: 1024, height: 576}
 
         constructor: (@canvas, @fps = 30) ->
+            @resize()
             @stage = new easel.Stage(@canvas.get(0))
 
             console.log "Starting #{fps}FPS Ticker"
@@ -13,16 +14,16 @@ define ['jquery', 'easel'], ($, easel) ->
 
             console.log "Resizing and binding resize to canvas"
             $(window).resize @resize.bind @
-            @resize()
+
 
         tick: (dt, paused) =>
             @stage.tick()
             @stage.update()
 
         resize: () ->
-            aspect = @BASE_RES[0] / @BASE_RES[1]
-            @canvas.width @BASE_RES[0] ## XXX: Locking scaling until later
-            width = @canvas.width()
-            @canvas.height (width / aspect)
-            console.log "W: #{@canvas.width()}, H: #{@canvas.height()}: AR[e]: #{aspect} AR[a]: #{@canvas.width() / @canvas.height()}"
-            @stage.update()
+            # Lock the canvas to a fixed resolution and aspect
+            aspect = @size.width / @size.height
+            width = @canvas.get(0).width = @size.width
+            height = @canvas.get(0).height = (width / aspect)
+
+            @stage?.update()
