@@ -15,7 +15,9 @@ define ['jquery', 'easel'], ($, easel) ->
 
     # Bind a resize function
     (resize = ()=>
+        base = [1024, 576]
         aspect = 16.0 / 9.0
+        canvas.width 1024 ## XXX: Locking scaling until later
         width = canvas.width()
         canvas.height (width / aspect)
         console.log "W: #{canvas.width()}, H: #{canvas.height()}: AR[e]: #{aspect} AR[a]: #{canvas.width() / canvas.height()}")()
