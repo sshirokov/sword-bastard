@@ -48,3 +48,13 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
             for y in [0..@size.height]
                 for x in [0..@size.width]
                     add_block(x, y)
+
+
+        ## Static utility
+        @world_to_block: (x, y) ->
+            [w, h] = [@prototype.size.width, @prototype.size.height]
+            [NaN, NaN]
+
+        @block_to_world: (x, y) ->
+            [w, h] = [@prototype.size.width, @prototype.size.height]
+            [NaN, NaN]
