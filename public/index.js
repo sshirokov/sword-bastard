@@ -9,6 +9,7 @@ require({
     'bootstrap': '/js/bootstrap.min',
     'coffee-script': '/js/coffee-script',
     'easel': '/js/easeljs-0.5.0.min',
+    'EventEmitter': '/js/EventEmitter',
 
     // RequireJS plugins
     'cs': "/js/cs",
