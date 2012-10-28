@@ -6,3 +6,5 @@ $ cd sword-bastard
 $ npm install
 $ bin/sword-bastard
 ```
+
+Open [http://localhost:5000](http://localhost:5000) in your browser.
