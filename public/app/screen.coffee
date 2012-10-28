@@ -24,3 +24,4 @@ define ['jquery', 'easel'], ($, easel) ->
             width = @dom_canvas.width()
             @dom_canvas.height (width / aspect)
             console.log "W: #{@dom_canvas.width()}, H: #{@dom_canvas.height()}: AR[e]: #{aspect} AR[a]: #{@dom_canvas.width() / @dom_canvas.height()}"
+            @update()
