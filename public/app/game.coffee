@@ -1,6 +1,7 @@
 define ['jquery', 'easel', 'EventEmitter', 'block'], ($, $e, EventEmitter, Block) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
+            $e.Ticker.addListener @
             @blocks = {}
             @player = {x: 0, y: 0}
 
@@ -23,3 +24,5 @@ define ['jquery', 'easel', 'EventEmitter', 'block'], ($, $e, EventEmitter, Block
                     @screen.stage.addChild b.container
             .error =>
                 console.log "Failed to fetch block."
+
+        tick: () =>

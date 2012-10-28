@@ -7,7 +7,6 @@ define ['jquery', 'easel'], ($, easel) ->
             @stage = new easel.Stage(@canvas.get(0))
 
             console.log "Starting #{fps}FPS Ticker"
-            easel.Ticker.removeAllListeners()
             easel.Ticker.useRAF = true
             easel.Ticker.setFPS @fps
             easel.Ticker.addListener @
