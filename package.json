@@ -1,0 +1,24 @@
+{
+  "name": "sword-bastard",
+  "version": "0.0.0",
+
+  "dependencies": {
+    "coffee-script": "1.4.0",
+    "express": ""
+  },
+
+
+  "directories": {
+    "lib": "./lib",
+    "bin": "./bin"
+  },
+
+  "scripts": {
+    "start": "bin/sword-bastard"
+  },
+
+  "engines": {
+    "node": "0.8.x",
+    "npm":  "1.1.x"
+  }
+}

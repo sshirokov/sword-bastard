@@ -1,0 +1,5 @@
+#!/bin/sh
+BASTARD_ROOT=$(dirname "$0")/..
+NODE=node
+
+(cd $BASTARD_ROOT; $NODE bin/sword-bastard.js)
