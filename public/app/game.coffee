@@ -1,4 +1,4 @@
-define ['jquery', 'easel', 'EventEmitter', 'block'], ($, $e, EventEmitter, Block) ->
+define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Block) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
             $e.Ticker.addListener @

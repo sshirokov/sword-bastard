@@ -1,15 +1,15 @@
-define ['jquery', 'easel'], ($, easel) ->
+define ['jquery', 'easel'], ($, $e) ->
     class Screen
         size: {width: 1024, height: 576}
 
         constructor: (@canvas, @fps = 30) ->
             @resize()
-            @stage = new easel.Stage(@canvas.get(0))
+            @stage = new $e.Stage(@canvas.get(0))
 
             console.log "Starting #{fps}FPS Ticker"
-            easel.Ticker.useRAF = true
-            easel.Ticker.setFPS @fps
-            easel.Ticker.addListener @
+            $e.Ticker.useRAF = true
+            $e.Ticker.setFPS @fps
+            $e.Ticker.addListener @
 
             console.log "Resizing and binding resize to canvas"
             $(window).resize @resize.bind @
