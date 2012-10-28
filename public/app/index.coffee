@@ -5,6 +5,7 @@ define ['jquery', 'easel'], ($, easel) ->
     stage = new easel.Stage($('#screen'))
 
     console.log "Starting 30FPS Ticker on the stage."
+    easel.Ticker.useRAF = true
     easel.Ticker.setFPS 30
     easel.Ticker.addListener stage
 
