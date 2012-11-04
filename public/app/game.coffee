@@ -76,5 +76,4 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
                 for own y of @blocks[x]
                     do (block = @blocks[x][y]) =>
                         block.container.x = -@camera.x
-                        # Don't invert Y because draw Y is inverted
-                        block.container.y = @camera.y
+                        block.container.y = @camera.y # Draw Y is inverted
