@@ -38,14 +38,6 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             @ready()
 
         init_player: () =>
-            g = new $e.Graphics()
-            g.beginStroke("#F00")
-             .beginFill("#0F0")
-             .drawRect(0, 0, 32, 32)
-
-            @player.avatar = new $e.Shape(g)
-            @player.avatar.regX = @player.avatar.regY = 16
-
             @screen.stage.addChild @player.avatar
 
             do (speed = 64) =>
