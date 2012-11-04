@@ -3,7 +3,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Bl
         constructor: (@screen) ->
             $e.Ticker.addListener @
             @blocks = {}
-            @player = {x: 0, y: 0}
+            @player = {x: 0, y: 0, avatar: null}
             @camera = {x: 0, y: 0}
 
         ready: () =>
@@ -11,6 +11,8 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Bl
 
         load: (cb) ->
             @once "ready", cb if cb
+
+            @init_player()
 
             # TODO: Compute block index from position
             block = {x: 0, y: 0}
@@ -22,9 +24,22 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Bl
                 new Block data, (b) =>
                     @blocks[block.x] ?= {}
                     @blocks[block.x][block.y] = b
-                    @screen.stage.addChild b.container
+                    @screen.stage.addChildAt b.container, @screen.stage.getChildIndex(@player.avatar)
             .error =>
                 console.log "Failed to fetch block."
+
+            @ready()
+
+        init_player: () =>
+            g = new $e.Graphics()
+            g.beginStroke("#F00")
+             .beginFill("#0F0")
+             .drawRect(@player.x, -@player.y, 32, 32)
+
+            @player.avatar = new $e.Shape(g)
+            @player.avatar.regX = @player.avatar.regY = 16
+
+            @screen.stage.addChild @player.avatar
 
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
