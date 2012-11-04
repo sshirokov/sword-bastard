@@ -6,6 +6,21 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Bl
             @player = {x: 0, y: 0, avatar: null}
             @camera = {x: 0, y: 0}
 
+            @key_codes =
+                38: "Up"
+                40: "Down"
+                37: "Left"
+                39: "Right"
+
+            document.onkeyup = @key_up
+            document.onkeydown = @key_down
+
+        key_up: (event) =>
+            console.log "Key up:", (@key_codes[event.which] or event.which)
+
+        key_down: (event) =>
+            console.log "Key down:", (@key_codes[event.which] or event.which)
+
         ready: () =>
             @emit "ready", @
 
