@@ -5,6 +5,8 @@ define ['jquery', 'easel'], ($, $e) ->
         constructor: (@canvas, @fps = 30) ->
             @resize()
             @stage = new $e.Stage(@canvas.get(0))
+            @stage.regX = -(@size.width / 2)
+            @stage.regY = -(@size.height / 2)
 
             console.log "Starting #{fps}FPS Ticker"
             $e.Ticker.useRAF = true

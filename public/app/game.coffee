@@ -4,6 +4,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Bl
             $e.Ticker.addListener @
             @blocks = {}
             @player = {x: 0, y: 0}
+            @camera = {x: 0, y: 0}
 
         ready: () =>
             @emit "ready", @
@@ -25,4 +26,9 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Bl
             .error =>
                 console.log "Failed to fetch block."
 
-        tick: () =>
+        tick: (elapsed, paused) =>
+            window.elapsed = elapsed
+
+            # Center the screen on the camera
+            @screen.stage.x = @camera.x
+            @screen.stage.y = -@camera.y

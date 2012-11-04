@@ -5,11 +5,11 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
             height: 16
 
         container: null
-        blocks: {}
+        tiles: {}
 
         constructor: (data, cb) ->
             @container = new $e.Container()
-            @blocks = {}
+            @tiles = {}
 
             @load data, cb if data
 
@@ -19,6 +19,10 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
 
         load: (@data, cb) ->
             @once "ready", cb if cb
+
+            @container.regX = (@size.width * @data.tileset.frames.width) / 2
+            @container.regY = (@size.height * @data.tileset.frames.height) / 2
+
             @tileset = new $e.SpriteSheet @data.tileset
 
             unless @tileset.complete
@@ -27,27 +31,27 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
                 @ready()
 
         init_children: () =>
-            add_block = (x, y) =>
+            add_tile = (x, y) =>
                 frame = @tileset.getFrame 0
                 bmp = new $e.Bitmap frame.image
                 bmp.sourceRect = frame.rect
 
                 label = new $e.Text("[#{@data.location.x},#{@data.location.y}](#{x},#{y})")
 
-                block = new $e.Container()
-                block.addChild bmp
-                block.addChild label
-                block.x = (x * @data.tileset.frames.width)
-                block.y = (y * @data.tileset.frames.width)
+                tile = new $e.Container()
+                tile.addChild bmp
+                tile.addChild label
+                tile.x = (x * @data.tileset.frames.width)
+                tile.y = (y * @data.tileset.frames.width)
 
-                @blocks[x] ?= {}
-                @blocks[x][y] = block
+                @tiles[x] ?= {}
+                @tiles[x][y] = tile
 
-                @container.addChild block
+                @container.addChild tile
 
             for y in [0..@size.height]
                 for x in [0..@size.width]
-                    add_block(x, y)
+                    add_tile x, y
 
 
         ## Static utility
