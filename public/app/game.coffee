@@ -1,28 +1,28 @@
 define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'], ($, $e, EventEmitter, Block, Input, Entity) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
-            setInterval (=> console.log "FPS: #{1000 / window.elapsed }"), 3000
+            #setInterval (=> console.log "FPS: #{1000 / window.elapsed }"), 3000
 
             window.$game = @
             $e.Ticker.addListener @
 
-            @player = new Entity("player")
             @blocks = {}
             @entities = [
-                @player,
+                new Entity("player", 0, 0)
                 new Entity("square", 200, 200)
             ]
 
             @camera = {x: 0, y: 0}
             @input = new Input()
 
+            @once "ready", =>
+                @screen.stage.addChildAt (e.avatar for e in @entities)..., 1
+
         ready: () =>
             @emit "ready", @
 
         load: (cb) ->
             @once "ready", cb if cb
-
-            @init_player()
 
             # TODO: Compute block index from position
             block = {x: 0, y: 0}
@@ -34,34 +34,14 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                 new Block data, (b) =>
                     @blocks[block.x] ?= {}
                     @blocks[block.x][block.y] = b
-                    @screen.stage.addChildAt b.container, @screen.stage.getChildIndex(@player.avatar)
+                    @screen.stage.addChild b.container
+                    @screen.stage.setChildIndex b.container, 0
+                    @ready()
             .error =>
                 console.log "Failed to fetch block."
 
-            @ready()
-
-        init_player: () =>
-            @screen.stage.addChild @player.avatar
-
-            do (speed = 64) =>
-                @input.on "key:down[Up]", => @player.v.y = speed
-                @input.on "key:up[Up]", => @player.v.y = 0
-
-                @input.on "key:down[Down]", => @player.v.y = -speed
-                @input.on "key:up[Down]", => @player.v.y = 0
-
-                @input.on "key:down[Left]", => @player.v.x = -speed
-                @input.on "key:up[Left]", => @player.v.x = 0
-
-                @input.on "key:down[Right]", => @player.v.x = speed
-                @input.on "key:up[Right]", => @player.v.x = 0
-
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
-
-            # Chase the player with the camera
-            @camera.x = @player.p.x
-            @camera.y = @player.p.y
 
             # Update entities
             for entity in @entities
