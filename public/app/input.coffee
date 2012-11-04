@@ -10,15 +10,10 @@ define ['EventEmitter'], (EventEmitter) ->
             @on "key:down", document.onkeydown if document.onkeydown
             @on "key:up", document.onkeyup if document.onkeyup
 
-            window.onkeyup = @up
-            window.onkeydown = @down
+            window.onkeyup = (e) => @key 'up', e
+            window.onkeydown = (e) => @key'down', e
 
-        up: (event) =>
-            @emit "key:up", event
-            do (mapping = @CODES[event.which]) =>
-                @emit "key:up[#{mapping}]" if mapping
-
-        down: (event) =>
-            @emit "key:down", event
-            do (mapping = @CODES[event.which]) =>
-                @emit "key:down[#{mapping}]" if mapping
+        key: (type, e) =>
+            @emit "key:#{type}", e
+            do (mapping = @CODES[e.which]) =>
+                @emit "key:#{type}[#{mapping}]" if mapping
