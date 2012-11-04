@@ -43,23 +43,22 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
 
             @screen.stage.addChild @player.avatar
 
-            @input.on "key:down[Up]", => @player.vy = 1
-            @input.on "key:up[Up]", => @player.vy = 0
+            do (speed = 5) =>
+                @input.on "key:down[Up]", => @player.vy = speed
+                @input.on "key:up[Up]", => @player.vy = 0
 
-            @input.on "key:down[Down]", => @player.vy = -1
-            @input.on "key:up[Down]", => @player.vy = 0
+                @input.on "key:down[Down]", => @player.vy = -speed
+                @input.on "key:up[Down]", => @player.vy = 0
 
-            @input.on "key:down[Left]", => @player.vx = -1
-            @input.on "key:up[Left]", => @player.vx = 0
+                @input.on "key:down[Left]", => @player.vx = -speed
+                @input.on "key:up[Left]", => @player.vx = 0
 
-            @input.on "key:down[Right]", => @player.vx = 1
-            @input.on "key:up[Right]", => @player.vx = 0
+                @input.on "key:down[Right]", => @player.vx = speed
+                @input.on "key:up[Right]", => @player.vx = 0
 
             $e.Ticker.addListener (elapsed, paused) =>
                 @player.x += @player.vx
                 @player.y += @player.vy
-                @player.avatar.x = @player.x
-                @player.avatar.y = @player.y * -1
 
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
@@ -67,3 +66,15 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
             # Chase the player with the camera
             @camera.x = @player.x
             @camera.y = @player.y
+
+            # Update the player avatar
+            @player.avatar.x = 0
+            @player.avatar.y = 0
+
+            # Update every block
+            for own x of @blocks
+                for own y of @blocks[x]
+                    do (block = @blocks[x][y]) =>
+                        block.container.x = -@camera.x
+                        # Don't invert Y because draw Y is inverted
+                        block.container.y = @camera.y
