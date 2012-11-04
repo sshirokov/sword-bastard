@@ -1,6 +1,7 @@
-define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, EventEmitter, Block, Input) ->
+define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'], ($, $e, EventEmitter, Block, Input, Entity) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
+            setInterval (=> console.log "FPS: #{1000 / window.elapsed }"), 3000
             window.$game = @
             $e.Ticker.addListener @
             @blocks = {}
@@ -43,7 +44,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
 
             @screen.stage.addChild @player.avatar
 
-            do (speed = 5) =>
+            do (speed = 64) =>
                 @input.on "key:down[Up]", => @player.vy = speed
                 @input.on "key:up[Up]", => @player.vy = 0
 
@@ -57,8 +58,9 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
                 @input.on "key:up[Right]", => @player.vx = 0
 
             $e.Ticker.addListener (elapsed, paused) =>
-                @player.x += @player.vx
-                @player.y += @player.vy
+                seconds = elapsed / 1000
+                @player.x += (@player.vx * seconds)
+                @player.y += (@player.vy * seconds)
 
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
