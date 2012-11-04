@@ -2,10 +2,14 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
     class Game extends EventEmitter
         constructor: (@screen) ->
             setInterval (=> console.log "FPS: #{1000 / window.elapsed }"), 3000
+
             window.$game = @
             $e.Ticker.addListener @
+
+            @player = new Entity()
             @blocks = {}
-            @player = {x: 0, vx: 0, vy: 0, y: 0, avatar: null}
+            @entities = [@player]
+
             @camera = {x: 0, y: 0}
             @input = new Input()
 
@@ -45,29 +49,29 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             @screen.stage.addChild @player.avatar
 
             do (speed = 64) =>
-                @input.on "key:down[Up]", => @player.vy = speed
-                @input.on "key:up[Up]", => @player.vy = 0
+                @input.on "key:down[Up]", => @player.v.y = speed
+                @input.on "key:up[Up]", => @player.v.y = 0
 
-                @input.on "key:down[Down]", => @player.vy = -speed
-                @input.on "key:up[Down]", => @player.vy = 0
+                @input.on "key:down[Down]", => @player.v.y = -speed
+                @input.on "key:up[Down]", => @player.v.y = 0
 
-                @input.on "key:down[Left]", => @player.vx = -speed
-                @input.on "key:up[Left]", => @player.vx = 0
+                @input.on "key:down[Left]", => @player.v.x = -speed
+                @input.on "key:up[Left]", => @player.v.x = 0
 
-                @input.on "key:down[Right]", => @player.vx = speed
-                @input.on "key:up[Right]", => @player.vx = 0
+                @input.on "key:down[Right]", => @player.v.x = speed
+                @input.on "key:up[Right]", => @player.v.x = 0
 
             $e.Ticker.addListener (elapsed, paused) =>
                 seconds = elapsed / 1000
-                @player.x += (@player.vx * seconds)
-                @player.y += (@player.vy * seconds)
+                @player.p.x += (@player.v.x * seconds)
+                @player.p.y += (@player.v.y * seconds)
 
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
 
             # Chase the player with the camera
-            @camera.x = @player.x
-            @camera.y = @player.y
+            @camera.x = @player.p.x
+            @camera.y = @player.p.y
 
             # Update the player avatar
             @player.avatar.x = 0
