@@ -12,8 +12,33 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                 new Entity("square", 200, 200)
             ]
 
-            @camera = {x: 0, y: 0}
+            @camera = {x: 0, y: 0, vx: 0, vy: 0}
             @input = new Input()
+
+            setInterval (=>
+                $(".camera.x").text @camera.x
+                $(".camera.y").text @camera.y
+                $(".fps").text Math.round 1000 / window.elapsed
+            ), 500
+
+            $e.Ticker.addListener (=>
+                @camera.x += @camera.vx
+                @camera.y += @camera.vy
+            )
+
+            @input.on_off "Up",
+                (=> @camera.vy = 1),
+                (=> @camera.vy = 0)
+            @input.on_off "Down",
+                (=> @camera.vy = -1),
+                (=> @camera.vy = 0)
+            @input.on_off "Right",
+                (=> @camera.vx = 1),
+                (=> @camera.vx = 0)
+            @input.on_off "Left",
+                (=> @camera.vx = -1),
+                (=> @camera.vx = 0)
+
 
             @once "ready", =>
                 @screen.stage.addChildAt (e.avatar for e in @entities)..., 1
@@ -46,7 +71,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             # Update entities
             for entity in @entities
                 entity.avatar.x = entity.p.x - @camera.x
-                entity.avatar.y = entity.p.y - @camera.y
+                entity.avatar.y = entity.p.y + @camera.y
 
             # Update every block
             for own x of @blocks
