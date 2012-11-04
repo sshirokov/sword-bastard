@@ -1,25 +1,11 @@
-define ['jquery', 'easel', 'EventEmitter', 'cs!block'], ($, $e, EventEmitter, Block) ->
+define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, EventEmitter, Block, Input) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
             $e.Ticker.addListener @
             @blocks = {}
             @player = {x: 0, y: 0, avatar: null}
             @camera = {x: 0, y: 0}
-
-            @key_codes =
-                38: "Up"
-                40: "Down"
-                37: "Left"
-                39: "Right"
-
-            document.onkeyup = @key_up
-            document.onkeydown = @key_down
-
-        key_up: (event) =>
-            console.log "Key up:", (@key_codes[event.which] or event.which)
-
-        key_down: (event) =>
-            console.log "Key down:", (@key_codes[event.which] or event.which)
+            @input = new Input()
 
         ready: () =>
             @emit "ready", @
