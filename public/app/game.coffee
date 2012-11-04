@@ -13,9 +13,18 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             @camera = {x: 0, y: 0, vx: 0, vy: 0}
             @input = new Input()
 
+            world_to_block = (x) =>
+                block_size = 16 * 64
+                Math.round(x / block_size)
+
             setInterval (=>
                 $(".camera.x").text @camera.x
                 $(".camera.y").text @camera.y
+
+                [x, y] = Block.world_to_block @camera.x, @camera.y
+                $(".block.x").text x
+                $(".block.y").text y
+
                 $(".fps").text Math.round 1000 / window.elapsed
             ), 500
 

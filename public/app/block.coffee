@@ -50,9 +50,5 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
 
         ## Static utility
         @world_to_block: (x, y) ->
-            [w, h] = [@prototype.size.width, @prototype.size.height]
-            [NaN, NaN]
-
-        @block_to_world: (x, y) ->
-            [w, h] = [@prototype.size.width, @prototype.size.height]
-            [NaN, NaN]
+            [w, h] = [@prototype.size.width, @prototype.size.height].map (x) => x * 64
+            [x / w, y / h].map (x) => Math.round x
