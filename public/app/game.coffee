@@ -1,8 +1,6 @@
 define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'], ($, $e, EventEmitter, Block, Input, Entity) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
-            #setInterval (=> console.log "FPS: #{1000 / window.elapsed }"), 3000
-
             window.$game = @
             $e.Ticker.addListener @
 
