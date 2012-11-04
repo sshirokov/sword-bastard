@@ -6,9 +6,12 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             window.$game = @
             $e.Ticker.addListener @
 
-            @player = new Entity()
+            @player = new Entity("player")
             @blocks = {}
-            @entities = [@player]
+            @entities = [
+                @player,
+                new Entity("square", 200, 200)
+            ]
 
             @camera = {x: 0, y: 0}
             @input = new Input()
@@ -53,11 +56,6 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                 @input.on "key:down[Right]", => @player.v.x = speed
                 @input.on "key:up[Right]", => @player.v.x = 0
 
-            $e.Ticker.addListener (elapsed, paused) =>
-                seconds = elapsed / 1000
-                @player.p.x += (@player.v.x * seconds)
-                @player.p.y += (@player.v.y * seconds)
-
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
 
@@ -65,9 +63,10 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             @camera.x = @player.p.x
             @camera.y = @player.p.y
 
-            # Update the player avatar
-            @player.avatar.x = 0
-            @player.avatar.y = 0
+            # Update entities
+            for entity in @entities
+                entity.avatar.x = entity.p.x - @camera.x
+                entity.avatar.y = entity.p.y - @camera.y
 
             # Update every block
             for own x of @blocks

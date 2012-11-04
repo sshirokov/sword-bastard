@@ -1,6 +1,6 @@
 define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
     class Entity extends EventEmitter
-        constructor: (x=0, y=0)->
+        constructor: (@name='undefined', x=0, y=0)->
             @p = {x: x, y: y}
             @v = {x: 0, y: 0}
             @r = 32
@@ -14,6 +14,10 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
             @avatar = new $e.Shape(g)
             @avatar.regX = @avatar.regY = 16
 
+            $e.Ticker.addListener (elapsed, paused) =>
+                seconds = elapsed / 1000
+                @p.x += (@v.x * seconds)
+                @p.y += (@v.y * seconds)
 
         ## Accessors
         position: => @p
