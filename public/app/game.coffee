@@ -55,14 +55,14 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
             @input.on "key:down[Right]", => @player.vx = 1
             @input.on "key:up[Right]", => @player.vx = 0
 
+            $e.Ticker.addListener (elapsed, paused) =>
+                @player.x += @player.vx
+                @player.y += @player.vy
+                @player.avatar.x = @player.x
+                @player.avatar.y = @player.y * -1
 
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
-
-            # Move the player
-            @player.avatar.x = @player.x += @player.vx
-            @player.avatar.y = @player.y += @player.vy
-            @player.avatar.y *= -1
 
             # Chase the player with the camera
             @camera.x = @player.x
