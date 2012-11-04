@@ -14,7 +14,11 @@ define ['EventEmitter'], (EventEmitter) ->
             window.onkeydown = @down
 
         up: (event) =>
-            console.log "Up: #{@CODES[event.which]}", event
+            @emit "key:up", event
+            do (mapping = @CODES[event.which]) =>
+                @emit "key:up[#{mapping}]" if mapping
 
         down: (event) =>
-            console.log "Down: #{@CODES[event.which]}", event
+            @emit "key:down", event
+            do (mapping = @CODES[event.which]) =>
+                @emit "key:down[#{mapping}]" if mapping

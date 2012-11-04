@@ -1,9 +1,10 @@
 define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, EventEmitter, Block, Input) ->
     class Game extends EventEmitter
         constructor: (@screen) ->
+            window.$game = @
             $e.Ticker.addListener @
             @blocks = {}
-            @player = {x: 0, y: 0, avatar: null}
+            @player = {x: 0, vx: 0, vy: 0, y: 0, avatar: null}
             @camera = {x: 0, y: 0}
             @input = new Input()
 
@@ -35,16 +36,34 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input'], ($, $e, Even
             g = new $e.Graphics()
             g.beginStroke("#F00")
              .beginFill("#0F0")
-             .drawRect(@player.x, -@player.y, 32, 32)
+             .drawRect(0, 0, 32, 32)
 
             @player.avatar = new $e.Shape(g)
             @player.avatar.regX = @player.avatar.regY = 16
 
             @screen.stage.addChild @player.avatar
 
+            @input.on "key:down[Up]", => @player.vy = 1
+            @input.on "key:up[Up]", => @player.vy = 0
+
+            @input.on "key:down[Down]", => @player.vy = -1
+            @input.on "key:up[Down]", => @player.vy = 0
+
+            @input.on "key:down[Left]", => @player.vx = -1
+            @input.on "key:up[Left]", => @player.vx = 0
+
+            @input.on "key:down[Right]", => @player.vx = 1
+            @input.on "key:up[Right]", => @player.vx = 0
+
+
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
 
-            # Center the screen on the camera
-            @screen.stage.x = @camera.x
-            @screen.stage.y = -@camera.y
+            # Move the player
+            @player.avatar.x = @player.x += @player.vx
+            @player.avatar.y = @player.y += @player.vy
+            @player.avatar.y *= -1
+
+            # Chase the player with the camera
+            @camera.x = @player.x
+            @camera.y = @player.y
