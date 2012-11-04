@@ -6,16 +6,12 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
 
             @blocks = {}
             @entities = [
-                new Entity("player", 0, 0)
+                new Entity("player", 0, 0),
                 new Entity("square", 200, 200)
             ]
 
             @camera = {x: 0, y: 0, vx: 0, vy: 0}
             @input = new Input()
-
-            world_to_block = (x) =>
-                block_size = 16 * 64
-                Math.round(x / block_size)
 
             setInterval (=>
                 $(".camera.x").text @camera.x
@@ -48,14 +44,15 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                     (=> @camera.vx = 0)
 
 
-            @once "ready", =>
-                @screen.stage.addChildAt (e.avatar for e in @entities)..., 2
+            @once "ready:blocks", =>
+                if @entities.length
+                    @screen.stage.addChildAt (e.avatar for e in @entities)..., 2
 
         ready: () =>
-            @emit "ready", @
+            @emit "ready:blocks", @
 
         load: (cb) ->
-            @once "ready", cb if cb
+            @once "ready:blocks", cb if cb
             ready = 0
             ready_block = () =>
                 ready += 1
