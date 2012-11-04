@@ -26,44 +26,65 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                 @camera.y += @camera.vy
             )
 
-            @input.on_off "Up",
-                (=> @camera.vy = 1),
-                (=> @camera.vy = 0)
-            @input.on_off "Down",
-                (=> @camera.vy = -1),
-                (=> @camera.vy = 0)
-            @input.on_off "Right",
-                (=> @camera.vx = 1),
-                (=> @camera.vx = 0)
-            @input.on_off "Left",
-                (=> @camera.vx = -1),
-                (=> @camera.vx = 0)
+            do (speed = 10) =>
+                @input.on_off "Up",
+                    (=> @camera.vy = speed),
+                    (=> @camera.vy = 0)
+                @input.on_off "Down",
+                    (=> @camera.vy = -speed),
+                    (=> @camera.vy = 0)
+                @input.on_off "Right",
+                    (=> @camera.vx = speed),
+                    (=> @camera.vx = 0)
+                @input.on_off "Left",
+                    (=> @camera.vx = -speed),
+                    (=> @camera.vx = 0)
 
 
             @once "ready", =>
-                @screen.stage.addChildAt (e.avatar for e in @entities)..., 1
+                @screen.stage.addChildAt (e.avatar for e in @entities)..., 2
 
         ready: () =>
             @emit "ready", @
 
         load: (cb) ->
             @once "ready", cb if cb
+            ready = 0
+            ready_block = () =>
+                ready += 1
+                console.log "Loaded #{ready} blocks"
+                @ready() if ready == 2
 
             # TODO: Compute block index from position
-            block = {x: 0, y: 0}
-            block_url = "/world/blocks/#{block.x}/#{block.y}/index.json"
-            console.log "Loading block URL: #{block_url}"
+            do (block = {x: 0, y: 0}) =>
+                block_url = "/world/blocks/#{block.x}/#{block.y}/index.json"
+                console.log "Loading block URL: #{block_url}"
 
-            $.getJSON block_url, (data) =>
-                console.log "Loaded block:", data
-                new Block data, (b) =>
-                    @blocks[block.x] ?= {}
-                    @blocks[block.x][block.y] = b
-                    @screen.stage.addChild b.container
-                    @screen.stage.setChildIndex b.container, 0
-                    @ready()
-            .error =>
-                console.log "Failed to fetch block."
+                $.getJSON block_url, (data) =>
+                    console.log "Loaded block:", data
+                    new Block data, (b) =>
+                        @blocks[block.x] ?= {}
+                        @blocks[block.x][block.y] = b
+                        @screen.stage.addChild b.container
+                        @screen.stage.setChildIndex b.container, 0
+                        ready_block()
+                .error =>
+                    console.log "Failed to fetch block."
+
+            do (block = {x: 0, y: 1}) =>
+                block_url = "/world/blocks/#{block.x}/#{block.y}/index.json"
+                console.log "Loading block URL: #{block_url}"
+
+                $.getJSON block_url, (data) =>
+                    console.log "Loaded block:", data
+                    new Block data, (b) =>
+                        @blocks[block.x] ?= {}
+                        @blocks[block.x][block.y] = b
+                        @screen.stage.addChild b.container
+                        @screen.stage.setChildIndex b.container, 0
+                        ready_block()
+                .error =>
+                    console.log "Failed to fetch block."
 
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
@@ -77,5 +98,6 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
             for own x of @blocks
                 for own y of @blocks[x]
                     do (block = @blocks[x][y]) =>
-                        block.container.x = -@camera.x
-                        block.container.y = @camera.y # Draw Y is inverted
+                        block.container.x = block.data.location.x - @camera.x
+                        block.container.y = block.data.location.y - @camera.y
+                        block.container.y *= -1

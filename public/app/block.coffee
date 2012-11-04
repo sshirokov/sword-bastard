@@ -4,9 +4,6 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
             width: 16
             height: 16
 
-        container: null
-        tiles: {}
-
         constructor: (data, cb) ->
             @container = new $e.Container()
             @tiles = {}
@@ -32,7 +29,7 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
 
         init_children: () =>
             add_tile = (x, y) =>
-                frame = @tileset.getFrame 0
+                frame = @tileset.getFrame @data.tileset.default or 0
                 bmp = new $e.Bitmap frame.image
                 bmp.sourceRect = frame.rect
 
