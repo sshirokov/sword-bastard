@@ -33,11 +33,8 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
                 bmp = new $e.Bitmap frame.image
                 bmp.sourceRect = frame.rect
 
-                label = new $e.Text("[#{@data.location.x},#{@data.location.y}](#{x},#{y})")
-
                 tile = new $e.Container()
                 tile.addChild bmp
-                tile.addChild label
                 tile.x = (x * @data.tileset.frames.width)
                 tile.y = (y * @data.tileset.frames.width)
 
