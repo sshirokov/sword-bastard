@@ -11,7 +11,7 @@ define ['EventEmitter'], (EventEmitter) ->
             @on "key:up", document.onkeyup if document.onkeyup
 
             window.onkeyup = (e) => @key 'up', e
-            window.onkeydown = (e) => @key'down', e
+            window.onkeydown = (e) => @key 'down', e
 
         key: (type, e) =>
             @emit "key:#{type}", e
