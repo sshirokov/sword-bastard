@@ -9,6 +9,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             ## Store the game globally
             window.$game = @
             $e.Ticker.addListener @
+            @init_stats()
 
             # Handler binds for inital load/fail
             do (on_error = (e) => cb(@, e)) =>
@@ -27,21 +28,14 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
                 @emit "ready:blocks" if complete
 
             ## Init
-            @init_player()
-            @init_stats()
+            new Player (@player, err) =>
+                return @emit "error", err if err
+                do (cluster = Block.block_cluster  @player.pos.x, @player.pos.y) =>
+                    cluster.forEach (row) => row.forEach (block) =>
+                        @add_block block if block
+
 
         ## Subinits
-        init_player: () =>
-            ## Fetch a new player
-            $.getJSON '/player/new/', (data) =>
-                console.log "Initial data:", data
-                @player = new Player data
-                cluster = Block.block_cluster  @player.pos.x, @player.pos.y
-                for row in cluster
-                    for block in row
-                        @add_block block if block
-            .error (xhr, txt, e) => cb(@, e)
-
         init_stats: () =>
             setInterval (=>
                 $(".camera.x").text @camera.x
