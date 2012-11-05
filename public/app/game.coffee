@@ -46,7 +46,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
 
             @once "ready:blocks", =>
                 if @entities.length
-                    @screen.stage.addChildAt (e.avatar for e in @entities)..., 2
+                    @screen.stage.addChild (e.avatar for e in @entities)...
 
         ready: () =>
             @emit "ready:blocks", @
@@ -69,8 +69,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                     new Block data, (b) =>
                         @blocks[block.x] ?= {}
                         @blocks[block.x][block.y] = b
-                        @screen.stage.addChild b.container
-                        @screen.stage.setChildIndex b.container, 0
+                        @screen.stage.addChildAt b.container, 0
                         ready_block()
                 .error =>
                     console.log "Failed to fetch block."
@@ -84,8 +83,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                     new Block data, (b) =>
                         @blocks[block.x] ?= {}
                         @blocks[block.x][block.y] = b
-                        @screen.stage.addChild b.container
-                        @screen.stage.setChildIndex b.container, 0
+                        @screen.stage.addChildAt b.container, 0
                         ready_block()
                 .error =>
                     console.log "Failed to fetch block."
