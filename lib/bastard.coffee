@@ -1,6 +1,7 @@
 fs = require 'fs'
-coffee = require 'coffee-script'
+coffee  = require 'coffee-script'
 express = require 'express'
+io      = require 'socket.io'
 
 class Bastard
     module.exports = @
@@ -13,6 +14,7 @@ class Bastard
         console.log "#{@constructor.name} Init"
         @app = express()
         @server = require('http').createServer @app
+        @io = io.listen @server
 
         # App config
         @app.use express.logger()
@@ -31,7 +33,8 @@ class Bastard
                 do (file) =>
                     controller = require "./controllers/#{file}"
                     name = /(.+)\.(.+)$/.exec(file)[1]
-                    @app.use "/#{name}/", controller
+                    @app.use "/#{name}/", controller.app      if controller.app
+                    controller.io @io.of "/#{name}/socket.io" if controller.io
 
     # Control
     start: (@options = {port: 5000}) =>
