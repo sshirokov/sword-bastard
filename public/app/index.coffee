@@ -1,10 +1,6 @@
 define ['jquery', 'easel', 'cs!screen', 'cs!game'], ($, $e, Screen, Game) ->
     console.log "Sword Bootstrap"
-    $e.Ticker.removeAllListeners()
-    canvas = $('#screen')
-    screen = new Screen(canvas)
-    game = new Game(screen)
-
-    console.log "Loading Game"
-    game.load =>
+    screen = new Screen $ '#screen'
+    game = new Game screen, (g, e) =>
+        throw e if e
         console.log "Game loaded"

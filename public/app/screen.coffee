@@ -3,6 +3,7 @@ define ['jquery', 'easel'], ($, $e) ->
         size: {width: 1024, height: 576}
 
         constructor: (@canvas, @fps = 30) ->
+            $e.Ticker.removeAllListeners()
             @resize()
             @stage = new $e.Stage(@canvas.get(0))
             @stage.regX = -(@size.width / 2)

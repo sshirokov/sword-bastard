@@ -4,6 +4,7 @@
 
   "dependencies": {
     "coffee-script": "1.4.0",
+    "node-uuid": "1.4.x",
     "express": ""
   },
 

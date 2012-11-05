@@ -1,18 +1,32 @@
-define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'], ($, $e, EventEmitter, Block, Input, Entity) ->
+define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 'cs!player'], ($, $e, EventEmitter, Block, Input, Entity, Player) ->
     class Game extends EventEmitter
-        constructor: (@screen) ->
+        constructor: (@screen, cb=(game, error)=>) ->
+            ## Store the game globally
             window.$game = @
-            $e.Ticker.addListener @
 
+            ## Slots
             @blocks = {}
-            @entities = [
-                new Entity("player", 0, 0),
-                new Entity("square", 200, 200)
-            ]
-
+            @entities = []
             @camera = {x: 0, y: 0, vx: 0, vy: 0}
             @input = new Input()
 
+            ## Bind the ticker
+            $e.Ticker.addListener @
+
+            ## Init secondary items
+            @init_stats()
+
+            ## Fetch a new player
+            $.getJSON '/player/new/', (data) =>
+                @player = new Player data
+                console.log "Initial data:", data
+                cb @, false
+            .error (xhr, txt, e) =>
+                console.log "Failed inital load"
+                cb @, e
+
+        ## Init other things
+        init_stats: () =>
             setInterval (=>
                 $(".camera.x").text @camera.x
                 $(".camera.y").text @camera.y
@@ -24,70 +38,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity'],
                 $(".fps").text Math.round 1000 / window.elapsed
             ), 500
 
-            $e.Ticker.addListener (=>
-                @camera.x += @camera.vx
-                @camera.y += @camera.vy
-            )
-
-            do (speed = 10) =>
-                @input.on_off "Up",
-                    (=> @camera.vy = speed),
-                    (=> @camera.vy = 0)
-                @input.on_off "Down",
-                    (=> @camera.vy = -speed),
-                    (=> @camera.vy = 0)
-                @input.on_off "Right",
-                    (=> @camera.vx = speed),
-                    (=> @camera.vx = 0)
-                @input.on_off "Left",
-                    (=> @camera.vx = -speed),
-                    (=> @camera.vx = 0)
-
-
-            @once "ready:blocks", =>
-                if @entities.length
-                    @screen.stage.addChild (e.avatar for e in @entities)...
-
-        ready: () =>
-            @emit "ready:blocks", @
-
-        load: (cb) ->
-            @once "ready:blocks", cb if cb
-            ready = 0
-            ready_block = () =>
-                ready += 1
-                console.log "Loaded #{ready} blocks"
-                @ready() if ready == 2
-
-            # TODO: Compute block index from position
-            do (block = {x: 0, y: 0}) =>
-                block_url = "/world/blocks/#{block.x}/#{block.y}/index.json"
-                console.log "Loading block URL: #{block_url}"
-
-                $.getJSON block_url, (data) =>
-                    console.log "Loaded block:", data
-                    new Block data, (b) =>
-                        @blocks[block.x] ?= {}
-                        @blocks[block.x][block.y] = b
-                        @screen.stage.addChildAt b.container, 0
-                        ready_block()
-                .error =>
-                    console.log "Failed to fetch block."
-
-            do (block = {x: 0, y: 1}) =>
-                block_url = "/world/blocks/#{block.x}/#{block.y}/index.json"
-                console.log "Loading block URL: #{block_url}"
-
-                $.getJSON block_url, (data) =>
-                    console.log "Loaded block:", data
-                    new Block data, (b) =>
-                        @blocks[block.x] ?= {}
-                        @blocks[block.x][block.y] = b
-                        @screen.stage.addChildAt b.container, 0
-                        ready_block()
-                .error =>
-                    console.log "Failed to fetch block."
-
+        ## Runtime events
         tick: (elapsed, paused) =>
             window.elapsed = elapsed
 
