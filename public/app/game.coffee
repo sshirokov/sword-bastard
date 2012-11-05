@@ -6,7 +6,8 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             @entities = []
             @camera = {x: 0, y: 0, vx: 0, vy: 0}
 
-            ## Store the game globally
+            ## Store the game globally,
+            ## Start the clock and load misc
             window.$game = @
             $e.Ticker.addListener @
             @init_stats()
