@@ -1,19 +1,25 @@
 define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 'cs!player'], ($, $e, EventEmitter, Block, Input, Entity, Player) ->
     class Game extends EventEmitter
         constructor: (@screen, cb=(game, error)=>) ->
-            ## Store the game globally
-            window.$game = @
-
             ## Slots
             @blocks = {}
             @entities = []
             @camera = {x: 0, y: 0, vx: 0, vy: 0}
             @input = new Input()
 
-            # Handler binds
-            @on "error", (e) => cb(@, e)
-            @once "ready:blocks", => cb(@)
+            ## Store the game globally
+            window.$game = @
+            $e.Ticker.addListener @
 
+            # Handler binds for inital load/fail
+            do (on_error = (e) => cb(@, e)) =>
+                @once "error", on_error
+                @once "ready:blocks", =>
+                    @removeListener "error", on_error
+                    cb @
+
+            # Handle block streaming and signal when all
+            # requested blocks are ready
             @on "ready:block", (b) =>
                 complete = true
                 for own x of @blocks
@@ -21,12 +27,12 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
                         do (block = @blocks[x][y]) => complete &= block.complete
                 @emit "ready:blocks" if complete
 
-            ## Bind the ticker
-            $e.Ticker.addListener @
-
-            ## Init secondary items
+            ## Init
+            @init_player()
             @init_stats()
 
+        ## Subinits
+        init_player: () =>
             ## Fetch a new player
             $.getJSON '/player/new/', (data) =>
                 console.log "Initial data:", data
@@ -34,7 +40,6 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
                 @add_block new Block @player.pos.x, @player.pos.y
             .error (xhr, txt, e) => cb(@, e)
 
-        ## Init other things
         init_stats: () =>
             setInterval (=>
                 $(".camera.x").text @camera.x
