@@ -30,7 +30,11 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             ## Init
             new Player (@player, err) =>
                 return @emit "error", err if err
-                do (cluster = Block.block_cluster  @player.pos.x, @player.pos.y) =>
+                ## Add the player entity to scene
+                @add_entity @player
+
+                ## Load the blocks around the initial player position
+                do (cluster = Block.block_cluster  @player.p.x, @player.p.y) =>
                     cluster.forEach (row) => row.forEach (block) =>
                         @add_block block if block
 
@@ -49,6 +53,10 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             ), 500
 
         ## Runtime API
+        add_entity: (entity) =>
+            @entities.push entity
+            @screen.stage.addChild entity.avatar if entity.avatar
+
         add_block: (block) =>
             console.log "Adding block:", block
             @blocks[block.x] ?= {}
