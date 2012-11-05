@@ -1,4 +1,4 @@
-define ['EventEmitter'], (EventEmitter) ->
+define ['jquery', 'EventEmitter'], ($, EventEmitter) ->
     class Input extends EventEmitter
         CODES:
             38: "Up"
@@ -7,11 +7,8 @@ define ['EventEmitter'], (EventEmitter) ->
             39: "Right"
 
         constructor: ->
-            @on "key:down", document.onkeydown if document.onkeydown
-            @on "key:up", document.onkeyup if document.onkeyup
-
-            window.onkeyup = (e) => @key 'up', e
-            window.onkeydown = (e) => @key 'down', e
+            $(document).keyup (e) => @key 'up', e
+            $(document).keydown (e) => @key 'down', e
 
         key: (type, e) =>
             @emit "key:#{type}", e

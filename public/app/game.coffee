@@ -5,7 +5,6 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             @blocks = {}
             @entities = []
             @camera = {x: 0, y: 0, vx: 0, vy: 0}
-            @input = new Input()
 
             ## Store the game globally
             window.$game = @
