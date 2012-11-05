@@ -1,20 +1,34 @@
-define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
+define ['jquery', 'easel', 'EventEmitter'], ($, $e, EventEmitter) ->
     class Block extends EventEmitter
         size:
             width: 16
             height: 16
 
-        constructor: (data, cb) ->
+        constructor: (@x, @y, cb=(->)) ->
             @container = new $e.Container()
             @tiles = {}
+            @complete = false
 
-            @load data, cb if data
+            ## Bind the handlers
+            @once "loaded", (data) =>
+                @load data, cb
+            @on "error", (e) =>
+                cb null, e
+
+            ## Do the fetch
+            do (url = "/world/blocks/#{x}/#{y}/index.json") =>
+                $.getJSON url, (data) =>
+                    @emit "loaded", data
+                .error (xhr, txt, e) =>
+                    @emit "error", e
 
         ready: () =>
             @init_children()
+            @complete = true
             @emit "ready", @
 
         load: (@data, cb) ->
+            console.log "Loading Block from", @data
             @once "ready", cb if cb
 
             @container.regX = (@size.width * @data.tileset.frames.width) / 2
@@ -23,7 +37,7 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
             @tileset = new $e.SpriteSheet @data.tileset
 
             unless @tileset.complete
-                @tileset.onComplete = @ready
+                @tileset.onComplete = => @ready()
             else
                 @ready()
 
@@ -46,7 +60,6 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
             for y in [0..@size.height]
                 for x in [0..@size.width]
                     add_tile x, y
-
 
         ## Static utility
         @world_to_block: (x, y) ->
