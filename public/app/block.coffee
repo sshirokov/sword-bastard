@@ -16,7 +16,7 @@ define ['jquery', 'easel', 'EventEmitter'], ($, $e, EventEmitter) ->
                 cb null, e
 
             ## Do the fetch
-            do (url = "/world/blocks/#{x}/#{y}/index.json") =>
+            do (url = "/world/blocks/#{x}/#{y}/") =>
                 $.getJSON url, (data) =>
                     @emit "loaded", data
                 .error (xhr, txt, e) =>
@@ -65,3 +65,12 @@ define ['jquery', 'easel', 'EventEmitter'], ($, $e, EventEmitter) ->
         @world_to_block: (x, y) ->
             [w, h] = [@prototype.size.width, @prototype.size.height].map (x) => x * 64
             [x / w, y / h].map (x) => Math.round x
+
+        @block_cluster: (x, y) ->
+            B = (x, y) => new @(x, y)
+            [cx, cy] = @world_to_block x, y
+            [
+                [ B(cx-1, cy+1), B(cx, cy+1), B(cx+1, cy+1) ],
+                [ B(cx-1, cy),   B(cx, cy),   B(cx+1, cy)   ],
+                [ B(cx-1, cy-1), B(cx, cy-1), B(cx+1, cy-1) ],
+            ]

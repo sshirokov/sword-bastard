@@ -36,7 +36,10 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             $.getJSON '/player/new/', (data) =>
                 console.log "Initial data:", data
                 @player = new Player data
-                @add_block new Block @player.pos.x, @player.pos.y
+                cluster = Block.block_cluster  @player.pos.x, @player.pos.y
+                for row in cluster
+                    for block in row
+                        @add_block block if block
             .error (xhr, txt, e) => cb(@, e)
 
         init_stats: () =>
@@ -53,13 +56,14 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
 
         ## Runtime API
         add_block: (block) =>
+            console.log "Adding block:", block
             @blocks[block.x] ?= {}
             @blocks[block.x][block.y] = block
             block.once "ready", () =>
                 @screen.stage.addChildAt block.container, 0
                 @emit "ready:block", block
             block.on "error", (e) =>
-                throw e
+                @emit "error", e
 
         ## Clock
         tick: (elapsed, paused) =>
@@ -74,6 +78,7 @@ define ['jquery', 'easel', 'EventEmitter', 'cs!block', 'cs!input', 'cs!entity', 
             for own x of @blocks
                 for own y of @blocks[x]
                     do (block = @blocks[x][y]) =>
+                        return unless block.complete
                         block.container.x = block.data.location.x - @camera.x
                         block.container.y = block.data.location.y - @camera.y
                         block.container.y *= -1
