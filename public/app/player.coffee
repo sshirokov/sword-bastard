@@ -1,23 +1,38 @@
 define ['jquery', 'cs!entity', 'cs!input'], ($, Entity, Input) =>
     class Player extends Entity
         constructor: (cb=(->)) ->
+            super "player"
             @id = ""
-            @pos = {x: 0, y: 0}
-            @dir = {x: 0, y: 1}
-            @data = {}
 
-            ## Fetch the player data
-            $.getJSON '/player/new/', (data) =>
-                {
-                    id: @id,
-                    pos: {x: @pos.x, y: @pos.y},
-                    dir: {x: @dir.x, y: @dir.y}
-                } = @data = data
+            ## Load handlers
+            @once "loaded", =>
                 console.log "Loaded:", @
+                @connect()
+            @once "connected", =>
+                console.log "Connected:", @
                 @bind_keys()
                 cb @
-            .error (xhr, txt, e) =>
+            @once "load:error", (e) =>
                 cb @, e
+
+            ## Init from the server
+            @load()
+
+        load: () =>
+            ## Fetch the player data
+            $.getJSON '/player/new/', (@data) =>
+                {
+                    id: @id,
+                    pos: {x: @p.x, y: @p.y},
+                    dir: {x: @d.x, y: @d.y}
+                } = @data
+                @name = "player:#{@id}"
+                @emit "loaded", @
+            .error (xhr, txt, e) =>
+                @emit "load:error", e
+
+        connect: () =>
+            @emit "connected", @
 
         bind_keys: =>
             @input ?= new Input()
