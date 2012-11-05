@@ -3,6 +3,7 @@ define ['easel', 'EventEmitter'], ($e, EventEmitter) ->
         constructor: (@name='undefined', x=0, y=0)->
             @p = {x: x, y: y}
             @v = {x: 0, y: 0}
+            @d = {x: 0, y: 1}
             @r = 32
             @avatar = null
 
